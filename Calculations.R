@@ -1,9 +1,9 @@
 
 # ICD code files
-
+df5 = df4%>%
+  select('Eid','Patient_1','Patient_2','Patient_3','Patient_4','Patient_5','Patient_6','Patient_7','Patient_8','Patient_9','Patient_10','Patient_11','Patient_12','Patient_13','Patient_14','Patient_15','Patient_16','Patient_17','Patient_18','Patient_19')
 df6 = df5[df5$diag_icd10 =='C760',]
 setDT(df6)
-df7 = df6[,1:19 ]
 
 # Metabolites Categorization(BMI,AGE)
 #Removes NAs
@@ -24,18 +24,24 @@ df22[df22$Age > 50 & df22$Age <= 65, "age_group"] <- "50-65"
 df22[df22$Age > 65, "age_group"] <- "> 65"
 
 # Healthy Patient criteria
+Hepa = df4%>%
+  select('Eid','Total_Free_Cholesterol','Liver_fat','Concentration_of_HDL','Total_Triglycerides','Concentration_of_HDL','LDL','IDL')
+max(Hepa$Concentration_of_HDL, na.rm = TRUE)
+Hepa1 = filter(Hepa,Liver_fat < 5 & Concentration_of_HDL < 0.050 & LDL < 0.100 & Total_Triglycerides < 1.5 & Total_Free_Cholesterol < 2, )
 
-df7 = filter(df6,Liver_fat < 5 & HDL_Cholesterol > 0.700 & LDL_Cholesterol > 1.00, )
-unique(df7$Eid)
 
-df12 = filter(Total_Triglycerides < 0.150 & Total_Free_Cholesterol < 0.200, )
-
+df7 = df6[!duplicated(df6), ]
+# filter(df4, Total_Triglycerides < 1.7 , )
+ 
 #Check NAs in column
-df7 <-df6[,19]
-df8 = filter(df6, rowSums(is.na(df6)) == ncol(df6)-1)
-print(df8$Eid)
-df9 <- df8[!duplicated(df8), ]
+
+No_medication = filter(df5, rowSums(is.na(df5)) == ncol(df5)-1)
+print(df5$Eid)
+No_medication_1 <- No_medication[!duplicated(No_medication), ]
+write.csv(No_medication, "C:/Users/User/Desktop/PhD Documentation/My drafts/No_Medication.csv", row.names=FALSE)
+write.csv(Healthy_Patients, "C:/Users/User/Desktop/PhD Documentation/My drafts/Healthy_Patients.csv", row.names=FALSE)
 
 #Graphical Observation
+vtree(df6, c("diag_icd10","Sex","BMI_group","age_group"))
 vtree(df6, c("diag_icd10","Sex","BMI_group","age_group"))
 pie(occurance2, by.x=c(Freq), by.y=c(Var1))
