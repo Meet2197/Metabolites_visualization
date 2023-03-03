@@ -6,4 +6,6 @@ This Repository is entitled to work over Private project Liver disease progressi
 
 Files mentioned MRI.R and Metabolites.R provides introduction of Data wragnling in this Project. 
 
+Data wrangling is occured based ICD codes from UK biobank data. 
+
 
